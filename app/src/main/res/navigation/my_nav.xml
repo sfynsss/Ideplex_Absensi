@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    android:forceDarkAllowed="false"
+    app:startDestination="@id/frm_beranda">
+    <fragment
+        android:id="@+id/frm_beranda"
+        android:name="com.ideplex.absensi.Activity.BerandaFragment"
+        android:label="fragment_beranda"
+        tools:layout="@layout/fragment_beranda" />
+    <fragment
+        android:id="@+id/frm_absensi"
+        android:name="com.ideplex.absensi.Activity.DinasDalamFragment"
+        android:label="fragment_dinas_dalam"
+        tools:layout="@layout/fragment_dinas_dalam" />
+    <fragment
+        android:id="@+id/frm_profil"
+        android:name="com.ideplex.absensi.Activity.ProfilFragment"
+        android:label="fragment_profil"
+        tools:layout="@layout/fragment_profil" />
+</navigation>

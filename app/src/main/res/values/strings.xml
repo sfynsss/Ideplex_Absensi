@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">KERJA PINTAR</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_jadwal_saya">JadwalSayaActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_riwayat_kehadiran">RiwayatKehadiranActivity</string>
+
+    <string-array name="bulan_array">
+        <item>Pilih Bulan</item>
+        <item>Januari</item>
+        <item>Februari</item>
+        <item>Maret</item>
+        <item>April</item>
+        <item>Mei</item>
+        <item>Juni</item>
+        <item>Juli</item>
+        <item>Agustus</item>
+        <item>September</item>
+        <item>Oktober</item>
+        <item>November</item>
+        <item>Desember</item>
+    </string-array>
+
+    <string-array name="tahun_array">
+        <item>Pilih Tahun</item>
+        <item>2021</item>
+        <item>2022</item>
+    </string-array>
+
+    <string-array name="izin_array">
+<!--        <item>Pilih Cuti</item>-->
+        <item>izin</item>
+        <item>sakit</item>
+        <!--        <item>Dinas Luar</item>-->
+    </string-array>
+
+    <string-array name="shift_array">
+        <item>Pilih Shift</item>
+        <item>Pagi</item>
+        <item>Sore</item>
+        <item>Malam</item>
+    </string-array>
+
+</resources>
+

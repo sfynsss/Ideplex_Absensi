@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Activity.EditProfilActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@drawable/main_header2"
+        android:gravity="center_vertical|start">
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/bt_back"
+            android:layout_marginStart="16dp">
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Ubah Data Pengguna"
+            android:textStyle="bold"
+            android:textSize="21sp"
+            android:textColor="@color/white">
+        </TextView>
+    </LinearLayout>
+
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:text="Silahkan lengkapi data yang ingin diubah :"-->
+<!--        android:layout_gravity="center">-->
+<!--    </TextView>-->
+
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        android:text="Foto Profil :"-->
+<!--        android:textSize="15sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:textColor="@color/green_dark">-->
+<!--    </TextView>-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="140dp"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:layout_marginHorizontal="16dp"-->
+<!--        android:weightSum="10">-->
+<!--        <LinearLayout-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="4"-->
+<!--            android:gravity="center">-->
+<!--            <LinearLayout-->
+<!--                android:layout_width="115dp"-->
+<!--                android:layout_height="130dp"-->
+<!--                android:background="@drawable/bt_white_round"-->
+<!--                android:padding="4dp">-->
+<!--                <ImageView-->
+<!--                    android:id="@+id/foto_pengguna"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent">-->
+<!--                </ImageView>-->
+<!--            </LinearLayout>-->
+<!--        </LinearLayout>-->
+<!--        <LinearLayout-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="6"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:orientation="vertical">-->
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Pastikan foto terlihat jelas">-->
+<!--            </TextView>-->
+<!--            <Button-->
+<!--                android:id="@+id/btn_browse"-->
+<!--                android:layout_width="120dp"-->
+<!--                android:layout_height="55dp"-->
+<!--                android:text="Pilih Foto"-->
+<!--                android:textAllCaps="false">-->
+<!--            </Button>-->
+<!--        </LinearLayout>-->
+<!--    </LinearLayout>-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:text="Password :"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/green_dark">
+    </TextView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="16dp"
+        android:background="@drawable/bt_white_round">
+        <EditText
+            android:id="@+id/password_pengguna"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:hint="Biarkan kosong bila tidak ingin mengubah"
+            android:paddingHorizontal="16dp"
+            android:text=""
+            android:textAlignment="textStart"
+            android:textSize="15sp">
+        </EditText>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_simpan"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="16dp"
+        android:text="Simpan"
+        android:textStyle="bold"
+        android:textAllCaps="false">
+    </Button>
+
+</LinearLayout>

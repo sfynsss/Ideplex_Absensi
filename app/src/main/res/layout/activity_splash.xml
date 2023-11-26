@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.SplashActivity">
+
+    <ImageView
+        android:id="@+id/splash_header"
+        android:layout_width="match_parent"
+        android:layout_height="116dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/splash_header_top2"></ImageView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/splash_bottom"
+        android:layout_below="@id/splash_header"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/img_logo"
+            android:layout_width="298dp"
+            android:layout_height="80dp"
+            android:background="@drawable/logo_karjapintar"></ImageView>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/splash_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="116dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/splash_header_bottom2"></ImageView>
+
+    <ImageView
+        android:id="@+id/logo_ideplex"
+        android:layout_width="30dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/logo_ideplex"></ImageView>
+
+</RelativeLayout>

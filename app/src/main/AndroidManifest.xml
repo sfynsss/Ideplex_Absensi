@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.ideplex.absensi">
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.location.gps" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission
+        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
+        tools:ignore="ProtectedPermissions" />
+
+<!--    android:hardwareAccelerated="false"-->
+<!--    android:largeHeap="true"-->
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
+        android:theme="@style/Theme.ViewAbsensi"
+        android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup">
+        <activity
+            android:name="com.ideplex.absensi.Activity.QrScanner"
+            android:exported="true" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBhYpivDh3X593xIjPmfgqiMP3eB6KSbZM" />
+
+        <activity
+            android:name="com.ideplex.absensi.Activity.AbsenWajah"
+            android:exported="true" />
+        <activity
+            android:name="com.ideplex.absensi.Activity.UbahProfilActivity"
+            android:exported="true" />
+        <activity
+            android:name="com.ideplex.absensi.Activity.PengajuanIzinActivity"
+            android:exported="true" />
+        <activity
+            android:name="com.ideplex.absensi.Activity.RiwayatKehadiranActivity"
+            android:exported="true" />
+        <activity
+            android:name="com.ideplex.absensi.Activity.JadwalSayaActivity"
+            android:exported="true" />
+        <activity
+            android:name="com.ideplex.absensi.Activity.AbsensiGagalActivity"
+            android:exported="true" />
+        <activity
+            android:name="com.ideplex.absensi.Activity.AbsensiBerhasilActivity"
+            android:exported="true" />
+        <activity
+            android:name="com.ideplex.absensi.Activity.PilihAbsensiActivity"
+            android:exported="true" />
+        <activity
+            android:name="com.ideplex.absensi.Activity.EditProfilActivity"
+            android:exported="true" />
+        <activity
+            android:name="com.ideplex.absensi.Activity.SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.ideplex.absensi.Activity.LoginActivity"
+            android:exported="true" />
+        <activity
+            android:name="com.ideplex.absensi.Activity.UserProfileActivity"
+            android:exported="true" />
+        <activity
+            android:name="com.ideplex.absensi.Activity.MainActivity"
+            android:exported="true" />
+    </application>
+
+</manifest>
