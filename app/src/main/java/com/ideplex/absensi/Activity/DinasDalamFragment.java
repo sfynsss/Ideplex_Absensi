@@ -1,36 +1,52 @@
 package com.ideplex.absensi.Activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Base64;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ideplex.absensi.Api.Api;
 import com.ideplex.absensi.Api.RetrofitClient;
+import com.ideplex.absensi.Helpers.ImageFilePath;
 import com.ideplex.absensi.R;
 import com.ideplex.absensi.Response.BaseResponse2;
 import com.ideplex.absensi.Response.ResponseSelectCheckin;
 import com.ideplex.absensi.Session.Session;
 import com.ideplex.absensi.Table.Presensi;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import androidmads.library.qrgenearator.QRGContents;
+import androidmads.library.qrgenearator.QRGEncoder;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,6 +68,7 @@ public class DinasDalamFragment extends Fragment {
     Call<BaseResponse2<Presensi>> cek_checkout;
     Boolean sts_masuk = false;
     Boolean sts_pulang = false;
+    Boolean result_cek_checkout = false;
     Integer id_presensi = 0;
 
     private GpsTracker gpsTracker;
@@ -61,6 +78,11 @@ public class DinasDalamFragment extends Fragment {
     //Koordinat Soebandi
     double finalLat = -8.1516843;
     double finalLong = 113.6710509;
+
+    EditText laporan;
+    Button btn_browse, btn_simpan;
+    TextView nama_file;
+    Bitmap bitmap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -139,13 +161,11 @@ public class DinasDalamFragment extends Fragment {
                         if (sts_pulang) {
                             Toast.makeText(getContext(), "Anda sudah checkout", Toast.LENGTH_SHORT).show();
                         } else {
-                            Boolean res = action_cek_chekout(id_presensi);
-                            if (res) {
-                                Intent it = new Intent(getContext(), PilihAbsensiActivity.class);
-                                it.putExtra("tipe", "pulang");
-                                it.putExtra("jarak", hasil);
-                                startActivity(it);
-                            }
+                            action_cek_chekout(id_presensi);
+//                                Intent it = new Intent(getContext(), PilihAbsensiActivity.class);
+//                                it.putExtra("tipe", "pulang");
+//                                it.putExtra("jarak", hasil);
+//                                startActivity(it);
                         }
                     } else {
                         Toast.makeText(getContext(), "Silahkan checkin terlebih dahulu !!!", Toast.LENGTH_SHORT).show();
@@ -191,56 +211,89 @@ public class DinasDalamFragment extends Fragment {
                     String earlyCheckin = response.body().getShift().getEarlyCheckin();
                     String lateCheckin = response.body().getShift().getLateCheckin();
 
-                    if (response.body().getShift().getStatus() == 0 &&
-                            !response.body().getShift().getBagian().equalsIgnoreCase("dokter")) {
-                        text_message_checkin.setText("Checkin belum dibuka, silahkan cek jadwal Anda");
-                        btn_message_checkin.setVisibility(View.VISIBLE);
-                    } else {
-                        if (earlyCheckin.compareTo(waktuServer) > 0 &&
-                                response.body().getShift().getStatus() == 1 &&
+                    if (response.body().getShift().getStatus() != 0) {
+                        if (response.body().getShift().getStatus() == 0 &&
                                 !response.body().getShift().getBagian().equalsIgnoreCase("dokter")) {
-                            text_message_checkin.setText("Checkin akan dibuka pada pukul " + response.body().getShift().getEarlyCheckin());
+                            text_message_checkin.setText("Checkin belum dibuka, silahkan cek jadwal Anda");
                             btn_message_checkin.setVisibility(View.VISIBLE);
-                        } else if (lateCheckin.compareTo(waktuServer) < 0 &&
+                        } else {
+                            if (earlyCheckin.compareTo(waktuServer) > 0 &&
                                     response.body().getShift().getStatus() == 1 &&
                                     !response.body().getShift().getBagian().equalsIgnoreCase("dokter")) {
-                                text_message_checkin.setText("Checkin telah ditutup pada pukul "+response.body().getShift().getLateCheckin());
+                                text_message_checkin.setText("Checkin akan dibuka pada pukul " + response.body().getShift().getEarlyCheckin());
                                 btn_message_checkin.setVisibility(View.VISIBLE);
-                        } else {
-                            if (response.body().getData() == null) {
-                                btn_absen_masuk.setVisibility(View.VISIBLE);
+                            } else if (lateCheckin.compareTo(waktuServer) < 0 &&
+                                    response.body().getShift().getStatus() == 1 &&
+                                    !response.body().getShift().getBagian().equalsIgnoreCase("dokter")) {
+                                text_message_checkin.setText("Checkin telah ditutup pada pukul " + response.body().getShift().getLateCheckin());
+                                btn_message_checkin.setVisibility(View.VISIBLE);
                             } else {
-                                id_presensi = response.body().getData().get(0).getId();
-                                if (!TextUtils.isEmpty(response.body().getData().get(0).getCheckin())) {
-                                    sts_masuk = true;
-                                    absen_masuk.setText(response.body().getData().get(0).getCheckin().substring(11));
-                                }
+                                if (response.body().getData() == null) {
+                                    btn_absen_masuk.setVisibility(View.VISIBLE);
+                                } else {
+                                    id_presensi = response.body().getData().get(0).getId();
+                                    if (!TextUtils.isEmpty(response.body().getData().get(0).getCheckin())) {
+                                        sts_masuk = true;
+                                        absen_masuk.setText(response.body().getData().get(0).getCheckin().substring(11));
+                                    }
 
-                                if (!TextUtils.isEmpty(response.body().getData().get(0).getCheckout())) {
-                                    sts_pulang = true;
-                                    absen_pulang.setText(response.body().getData().get(0).getCheckout().substring(11));
-                                }
+                                    if (!TextUtils.isEmpty(response.body().getData().get(0).getCheckout())) {
+                                        sts_pulang = true;
+                                        absen_pulang.setText(response.body().getData().get(0).getCheckout().substring(11));
+                                    }
 
-                                if (!TextUtils.isEmpty(response.body().getDurasi())) {
-                                    durasi.setText(response.body().getDurasi());
-                                }
+                                    if (!TextUtils.isEmpty(response.body().getDurasi())) {
+                                        durasi.setText(response.body().getDurasi());
+                                    }
 
-                                switch (response.body().getData().get(0).getStatus()) {
-                                    case "aktif":
-                                        btn_break.setVisibility(View.VISIBLE);
-                                        btn_absen_pulang.setVisibility(View.VISIBLE);
-                                        break;
-                                    case "break":
-                                        btn_lanjut.setVisibility(View.VISIBLE);
-                                        btn_absen_pulang.setVisibility(View.VISIBLE);
-                                        break;
-                                    default:
-                                        if (response.body().getShift().getBagian().equalsIgnoreCase("dokter")) {
+                                    switch (response.body().getData().get(0).getStatus()) {
+                                        case "aktif":
+                                            btn_break.setVisibility(View.VISIBLE);
+                                            btn_absen_pulang.setVisibility(View.VISIBLE);
+                                            break;
+                                        case "break":
                                             btn_lanjut.setVisibility(View.VISIBLE);
-                                        }
-                                        break;
+                                            btn_absen_pulang.setVisibility(View.VISIBLE);
+                                            break;
+                                        default:
+                                            if (response.body().getShift().getBagian().equalsIgnoreCase("dokter")) {
+                                                btn_lanjut.setVisibility(View.VISIBLE);
+                                            }
+                                            break;
+                                    }
                                 }
                             }
+                        }
+                    } else {
+                        id_presensi = response.body().getData().get(0).getId();
+                        if (!TextUtils.isEmpty(response.body().getData().get(0).getCheckin())) {
+                            sts_masuk = true;
+                            absen_masuk.setText(response.body().getData().get(0).getCheckin().substring(11));
+                        }
+
+                        if (!TextUtils.isEmpty(response.body().getData().get(0).getCheckout())) {
+                            sts_pulang = true;
+                            absen_pulang.setText(response.body().getData().get(0).getCheckout().substring(11));
+                        }
+
+                        if (!TextUtils.isEmpty(response.body().getDurasi())) {
+                            durasi.setText(response.body().getDurasi());
+                        }
+
+                        switch (response.body().getData().get(0).getStatus()) {
+                            case "aktif":
+                                btn_break.setVisibility(View.VISIBLE);
+                                btn_absen_pulang.setVisibility(View.VISIBLE);
+                                break;
+                            case "break":
+                                btn_lanjut.setVisibility(View.VISIBLE);
+                                btn_absen_pulang.setVisibility(View.VISIBLE);
+                                break;
+                            default:
+                                if (response.body().getShift().getBagian().equalsIgnoreCase("dokter")) {
+                                    btn_lanjut.setVisibility(View.VISIBLE);
+                                }
+                                break;
                         }
                     }
                 } else {
@@ -367,7 +420,7 @@ public class DinasDalamFragment extends Fragment {
     }
 
     public void doing_break(Integer id_presensi) {
-        istirahat = api.istirahat(id_presensi+"");
+        istirahat = api.istirahat(id_presensi + "");
         istirahat.enqueue(new Callback<BaseResponse2<Presensi>>() {
             @Override
             public void onResponse(Call<BaseResponse2<Presensi>> call, Response<BaseResponse2<Presensi>> response) {
@@ -394,7 +447,7 @@ public class DinasDalamFragment extends Fragment {
     }
 
     public void doing_lanjut(Integer id_presensi) {
-        lanjut = api.lanjut(id_presensi+"");
+        lanjut = api.lanjut(id_presensi + "");
         lanjut.enqueue(new Callback<BaseResponse2<Presensi>>() {
             @Override
             public void onResponse(Call<BaseResponse2<Presensi>> call, Response<BaseResponse2<Presensi>> response) {
@@ -420,9 +473,8 @@ public class DinasDalamFragment extends Fragment {
         });
     }
 
-    Boolean result = false;
-    public Boolean action_cek_chekout(Integer id_presensi) {
-        cek_checkout = api.cek_checkout(id_presensi+"");
+    public void action_cek_chekout(Integer id_presensi) {
+        cek_checkout = api.cek_checkout(id_presensi + "");
         cek_checkout.enqueue(new Callback<BaseResponse2<Presensi>>() {
             @Override
             public void onResponse(Call<BaseResponse2<Presensi>> call, Response<BaseResponse2<Presensi>> response) {
@@ -430,8 +482,8 @@ public class DinasDalamFragment extends Fragment {
                     if (response.body().getStatus() == false) {
                         Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        result = true;
+//                        Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        showInputBox();
                     }
                 } else {
                     Toast.makeText(getContext(), "Pengecekan Checkout Gagal !!!", Toast.LENGTH_SHORT).show();
@@ -443,7 +495,79 @@ public class DinasDalamFragment extends Fragment {
                 Toast.makeText(getContext(), "Error " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
-        return result;
+    public void showInputBox() {
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setTitle("Modal Laporan");
+        View v = getLayoutInflater().inflate(R.layout.adapter_laporan, null);
+        dialog.setContentView(v);
+//        System.out.println(oldItem);
+//        DisplayMetrics dm = new DisplayMetrics();
+//        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//        lp.gravity = Gravity.TOP;
+        dialog.getWindow().setAttributes(lp);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        laporan = v.findViewById(R.id.laporan);
+        btn_browse = v.findViewById(R.id.btn_browse);
+        nama_file = v.findViewById(R.id.nama_file);
+        btn_simpan = v.findViewById(R.id.btn_simpan);
+
+        btn_browse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                startActivityForResult(i, 1);
+            }
+        });
+
+        btn_simpan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent it = new Intent(getContext(), PilihAbsensiActivity.class);
+                it.putExtra("tipe", "pulang");
+                it.putExtra("jarak", hasil);
+                it.putExtra("laporan", laporan.getText().toString());
+                it.putExtra("upload", imageToString(bitmap));
+                it.putExtra("id_presensi", id_presensi+"");
+                startActivity(it);
+            }
+        });
+
+        dialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == -1 && data != null && data.getData() != null) {
+                Uri uri = data.getData();
+                String realPath = ImageFilePath.getPath(getContext(), data.getData());
+//                realPath = RealPathUtil.getRealPathFromURI_API19(this, data.getData());
+                nama_file.setText(realPath);
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                    // Log.d(TAG, String.valueOf(bitmap));
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private String imageToString(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        byte[] imgBytes = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(imgBytes, Base64.DEFAULT);
     }
 }

@@ -63,7 +63,9 @@ public interface Api {
     @FormUrlEncoded
     @POST("checkout")
     Call<BaseResponse2<Presensi>> checkout(
-
+            @Field("laporan") String laporan,
+            @Field("upload") String upload,
+            @Field("id") String id
     );
 
     @FormUrlEncoded
@@ -119,7 +121,7 @@ public interface Api {
     Call<BaseResponse<Kehadiran>> getRiwayatKehadiran();
 
     @GET("https://maps.googleapis.com/maps/api/distancematrix/json")
-    Call<Jarak> getJarak (
+    Call<Jarak> getJarak(
             @Query(value = "origins", encoded = true) String origin,
             @Query(value = "destinations", encoded = true) String destination,
             @Query("key") String api_key

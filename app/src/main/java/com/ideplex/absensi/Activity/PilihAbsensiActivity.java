@@ -77,7 +77,7 @@ public class PilihAbsensiActivity extends AppCompatActivity {
     ArrayList<String> jam_mulai = new ArrayList<>();
     ArrayList<String> jam_selesai = new ArrayList<>();
 
-    String jadwal_id, jam_kerja_id, tipe, jarak_tmp;
+    String jadwal_id, jam_kerja_id, tipe, jarak_tmp, laporan, upload, id_presensi;
 
     String latitude = "0";
     String longitude = "0";
@@ -144,6 +144,9 @@ public class PilihAbsensiActivity extends AppCompatActivity {
 
         tipe = getIntent().getStringExtra("tipe");
         jarak_tmp = getIntent().getStringExtra("jarak");
+        laporan = getIntent().getStringExtra("laporan");
+        upload = getIntent().getStringExtra("upload");
+        id_presensi = getIntent().getStringExtra("id_presensi");
         setJarak();
 
         if (ActivityCompat.checkSelfPermission(PilihAbsensiActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -263,7 +266,7 @@ public class PilihAbsensiActivity extends AppCompatActivity {
                     });
                 } else {
                     sts = 2;
-                    checkout = api.checkout();
+                    checkout = api.checkout(laporan, upload, id_presensi);
                     checkout.enqueue(new Callback<BaseResponse2<Presensi>>() {
                         @Override
                         public void onResponse(Call<BaseResponse2<Presensi>> call, Response<BaseResponse2<Presensi>> response) {
@@ -315,7 +318,7 @@ public class PilihAbsensiActivity extends AppCompatActivity {
                     });
                 } else {
                     sts = 2;
-                    checkout = api.checkout();
+                    checkout = api.checkout(laporan, upload, id_presensi);
                     checkout.enqueue(new Callback<BaseResponse2<Presensi>>() {
                         @Override
                         public void onResponse(Call<BaseResponse2<Presensi>> call, Response<BaseResponse2<Presensi>> response) {
