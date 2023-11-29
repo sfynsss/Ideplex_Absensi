@@ -12,15 +12,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ideplex.absensi.Api.Api;
 import com.ideplex.absensi.Api.RetrofitClient;
+import com.ideplex.absensi.Helpers.ApiError;
+import com.ideplex.absensi.Helpers.ErrorUtils;
 import com.ideplex.absensi.R;
 import com.ideplex.absensi.Response.BaseResponse;
 import com.ideplex.absensi.Session.Session;
 import com.ideplex.absensi.Table.JadwalHariIni;
+import com.ideplex.absensi.Table.Kehadiran;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,15 +40,21 @@ public class BerandaFragment extends Fragment {
     Handler handler = new Handler();
 
     TextView nama_pengguna, nip_pengguna, jabatan_pengguna, shift_pengguna;
+    ListView list_riwayat_kehadiran;
     ImageView img_profil;
     Session session;
     Api api;
     Call<BaseResponse<JadwalHariIni>> getJadwalHariIni;
+    Call<BaseResponse<Kehadiran>> getRiwayatKehadiran;
+    AdapterDurasiKerja adapterDurasiKerja;
+
+    ArrayList<String> tanggal = new ArrayList<>();
+    ArrayList<String> durasi = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_beranda, container, false);
+        View view = inflater.inflate(R.layout.fragment_beranda2, container, false);
 
         session = new Session(getContext());
         api = RetrofitClient.createServiceWithAuth(Api.class, session.getToken());
@@ -56,6 +66,7 @@ public class BerandaFragment extends Fragment {
         img_profil = (ImageView) view.findViewById(R.id.img_profil);
 
         nama_pengguna = view.findViewById(R.id.nama_pengguna);
+        list_riwayat_kehadiran = view.findViewById(R.id.list_riwayat_kehadiran);
 //        nip_pengguna = view.findViewById(R.id.nip_pengguna);
 //        jabatan_pengguna = view.findViewById(R.id.jabatan_pengguna);
 //        shift_pengguna = view.findViewById(R.id.shift_pengguna);
@@ -66,6 +77,7 @@ public class BerandaFragment extends Fragment {
 //        jabatan_pengguna.setText(session.getNamaBagian());
 
         jadwalHariIni(session.getNip());
+        getDataRiwayatKehadiran();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -137,6 +149,36 @@ public class BerandaFragment extends Fragment {
             public void onFailure(Call<BaseResponse<JadwalHariIni>> call, Throwable t) {
 //                shift_pengguna.setText("-");
                 Toast.makeText(getContext(), "Error "+t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void getDataRiwayatKehadiran() {
+        getRiwayatKehadiran = api.getRiwayatKehadiran();
+        getRiwayatKehadiran.enqueue(new Callback<BaseResponse<Kehadiran>>() {
+            @Override
+            public void onResponse(Call<BaseResponse<Kehadiran>> call, Response<BaseResponse<Kehadiran>> response) {
+                if (response.isSuccessful()) {
+                    tanggal.clear();
+                    durasi.clear();
+
+                    for (int i = 0; i < response.body().getData().size(); i++) {
+                        tanggal.add(response.body().getData().get(i).getTanggal());
+                        durasi.add(response.body().getData().get(i).getDurasi());
+                    }
+
+                    adapterDurasiKerja = new AdapterDurasiKerja(getActivity(), tanggal, durasi);
+                    list_riwayat_kehadiran.setAdapter(adapterDurasiKerja);
+                    adapterDurasiKerja.notifyDataSetChanged();
+                } else {
+                    ApiError apiError = ErrorUtils.parseError(response);
+                    Toast.makeText(getActivity(), apiError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse<Kehadiran>> call, Throwable t) {
+                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -59,10 +59,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Jam : ">
+                    android:text="Checkin : ">
                 </TextView>
                 <TextView
-                    android:id="@+id/jam_absen"
+                    android:id="@+id/checkin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="17:41"
@@ -76,13 +76,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Keterangan : ">
+                    android:text="Checkout : ">
                 </TextView>
                 <TextView
-                    android:id="@+id/keterangan"
+                    android:id="@+id/checkout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="-">
+                    android:text="18.50"
+                    android:textColor="#FF9800"
+                    android:textStyle="bold">
                 </TextView>
             </LinearLayout>
         </LinearLayout>

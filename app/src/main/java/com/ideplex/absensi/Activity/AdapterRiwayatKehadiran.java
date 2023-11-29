@@ -23,20 +23,18 @@ public class AdapterRiwayatKehadiran extends ArrayAdapter<String> {
 
     private Activity context;
     private Context mContext;
-    private ArrayList<String> scan_date = new ArrayList<>();
-    private ArrayList<String> status = new ArrayList<>();
-    private ArrayList<String> dinas_luar = new ArrayList<>();
-    private ArrayList<String> keterangan = new ArrayList<>();
+    private ArrayList<String> tanggal = new ArrayList<>();
+    private ArrayList<String> checkin = new ArrayList<>();
+    private ArrayList<String> checkout = new ArrayList<>();
 
-    public AdapterRiwayatKehadiran(Activity context, ArrayList<String> scan_date, ArrayList<String> status, ArrayList<String> dinas_luar, ArrayList<String> keterangan) {
-        super(context, R.layout.adapter_riwayat_kehadiran, scan_date);
+    public AdapterRiwayatKehadiran(Activity context, ArrayList<String> tanggal, ArrayList<String> checkin, ArrayList<String> checkout) {
+        super(context, R.layout.adapter_riwayat_kehadiran, tanggal);
 
         this.context = context;
         this.mContext = context;
-        this.scan_date = scan_date;
-        this.status = status;
-        this.dinas_luar = dinas_luar;
-        this.keterangan = keterangan;
+        this.tanggal = tanggal;
+        this.checkin = checkin;
+        this.checkout = checkout;
     }
 
     @SuppressLint("ResourceAsColor")
@@ -53,48 +51,21 @@ public class AdapterRiwayatKehadiran extends ArrayAdapter<String> {
             viewHolder = (ViewHolder) v.getTag();
         }
 
-        viewHolder.tgl_kehadiran.setText(scan_date.get(position).substring(0,10));
-        viewHolder.jam_absen.setText(scan_date.get(position).substring(11));
-        viewHolder.keterangan.setText(keterangan.get(position));
-
-        if (status.get(position).equals("1")) {
-            viewHolder.jam_absen.setTextColor(Color.parseColor("#00B04E"));
-            viewHolder.gbr_keluar.setVisibility(View.GONE);
-            viewHolder.gbr_masuk.setVisibility(View.VISIBLE);
-            viewHolder.absen_pulang.setVisibility(View.GONE);
-            if (dinas_luar.get(position).equals("0")) {
-                viewHolder.absen_masuk.setVisibility(View.VISIBLE);
-                viewHolder.dinas_luar.setVisibility(View.GONE);
-            } else if (dinas_luar.get(position).equals("1")) {
-                viewHolder.absen_masuk.setVisibility(View.GONE);
-                viewHolder.dinas_luar.setVisibility(View.VISIBLE);
-            }
-        } else if (status.get(position).equals("2")) {
-            viewHolder.jam_absen.setTextColor(Color.parseColor("#E95557"));
-            viewHolder.gbr_keluar.setVisibility(View.VISIBLE);
-            viewHolder.gbr_masuk.setVisibility(View.GONE);
-            viewHolder.absen_pulang.setVisibility(View.VISIBLE);
-            viewHolder.absen_masuk.setVisibility(View.GONE);
-        }
+        viewHolder.tgl_kehadiran.setText(tanggal.get(position));
+        viewHolder.checkin.setText(checkin.get(position) != null ? checkin.get(position).substring(11) : "");
+        viewHolder.checkout.setText(checkout.get(position) != null ? checkout.get(position).substring(11) : "");
 
         return v;
     }
 
     class ViewHolder{
-        ImageView gbr_keluar, gbr_masuk;
         TextView tgl_kehadiran;
-        TextView jam_absen;
-        TextView keterangan;
-        TextView absen_masuk, absen_pulang, dinas_luar;
+        TextView checkin;
+        TextView checkout;
         ViewHolder(View view){
-            gbr_masuk = view.findViewById(R.id.gbr_masuk);
-            gbr_keluar = view.findViewById(R.id.gbr_keluar);
             tgl_kehadiran = view.findViewById(R.id.tgl_kehadiran);
-            jam_absen = view.findViewById(R.id.jam_absen);
-            keterangan = view.findViewById(R.id.keterangan);
-            absen_masuk = view.findViewById(R.id.absen_masuk);
-            absen_pulang = view.findViewById(R.id.absen_pulang);
-            dinas_luar = view.findViewById(R.id.dinas_luar);
+            checkin = view.findViewById(R.id.checkin);
+            checkout = view.findViewById(R.id.checkout);
         }
     }
 

@@ -5,65 +5,92 @@ import com.google.gson.annotations.SerializedName;
 
 public class Kehadiran {
 
-    @SerializedName("att_id")
+    @SerializedName("id")
     @Expose
-    private Integer attId;
-    @SerializedName("nip")
+    private Integer id;
+    @SerializedName("id_karyawan")
     @Expose
-    private String nip;
-    @SerializedName("scan_date")
+    private Integer idKaryawan;
+    @SerializedName("tanggal")
     @Expose
-    private String scanDate;
+    private String tanggal;
+    @SerializedName("checkin")
+    @Expose
+    private String checkin;
+    @SerializedName("checkout")
+    @Expose
+    private String checkout;
+    @SerializedName("durasi")
+    @Expose
+    private String durasi;
     @SerializedName("status")
     @Expose
     private String status;
-    @SerializedName("jam_kerja_id")
+    @SerializedName("laporan")
     @Expose
-    private String jamKerjaId;
-    @SerializedName("bagian_id")
+    private String laporan;
+    @SerializedName("created_at")
     @Expose
-    private String bagianId;
-    @SerializedName("id_finger")
+    private String createdAt;
+    @SerializedName("updated_at")
     @Expose
-    private String idFinger;
-    @SerializedName("lat")
+    private String updatedAt;
+    @SerializedName("latitude")
     @Expose
-    private String lat;
-    @SerializedName("lng")
+    private String latitude;
+    @SerializedName("longitude")
     @Expose
-    private String lng;
-    @SerializedName("foto_wajah")
+    private String longitude;
+    @SerializedName("upload")
     @Expose
-    private String fotoWajah;
-    @SerializedName("dinas_luar")
-    @Expose
-    private Integer dinasLuar;
-    @SerializedName("status_verifikasi")
-    @Expose
-    private Integer stsVerifikasi;
+    private String upload;
 
-    public Integer getAttId() {
-        return attId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setAttId(Integer attId) {
-        this.attId = attId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public String getNip() {
-        return nip;
+    public Integer getIdKaryawan() {
+        return idKaryawan;
     }
 
-    public void setNip(String nip) {
-        this.nip = nip;
+    public void setIdKaryawan(Integer idKaryawan) {
+        this.idKaryawan = idKaryawan;
     }
 
-    public String getScanDate() {
-        return scanDate;
+    public String getTanggal() {
+        return tanggal;
     }
 
-    public void setScanDate(String scanDate) {
-        this.scanDate = scanDate;
+    public void setTanggal(String tanggal) {
+        this.tanggal = tanggal;
+    }
+
+    public String getCheckin() {
+        return checkin;
+    }
+
+    public void setCheckin(String checkin) {
+        this.checkin = checkin;
+    }
+
+    public String getCheckout() {
+        return checkout;
+    }
+
+    public void setCheckout(String checkout) {
+        this.checkout = checkout;
+    }
+
+    public String getDurasi() {
+        return durasi;
+    }
+
+    public void setDurasi(String durasi) {
+        this.durasi = durasi;
     }
 
     public String getStatus() {
@@ -74,67 +101,52 @@ public class Kehadiran {
         this.status = status;
     }
 
-    public String getJamKerjaId() {
-        return jamKerjaId;
+    public String getLaporan() {
+        return laporan;
     }
 
-    public void setJamKerjaId(String jamKerjaId) {
-        this.jamKerjaId = jamKerjaId;
+    public void setLaporan(String laporan) {
+        this.laporan = laporan;
     }
 
-    public String getBagianId() {
-        return bagianId;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setBagianId(String bagianId) {
-        this.bagianId = bagianId;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public String getIdFinger() {
-        return idFinger;
+    public String getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setIdFinger(String idFinger) {
-        this.idFinger = idFinger;
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
-    public String getLat() {
-        return lat;
+    public String getLatitude() {
+        return latitude;
     }
 
-    public void setLat(String lat) {
-        this.lat = lat;
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
     }
 
-    public String getLng() {
-        return lng;
+    public String getLongitude() {
+        return longitude;
     }
 
-    public void setLng(String lng) {
-        this.lng = lng;
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 
-    public String getFotoWajah() {
-        return fotoWajah;
+    public String getUpload() {
+        return upload;
     }
 
-    public void setFotoWajah(String fotoWajah) {
-        this.fotoWajah = fotoWajah;
+    public void setUpload(String upload) {
+        this.upload = upload;
     }
 
-    public Integer getDinasLuar() {
-        return dinasLuar;
-    }
-
-    public void setDinasLuar(Integer dinasLuar) {
-        this.dinasLuar = dinasLuar;
-    }
-
-    public Integer getStsVerifikasi() {
-        return stsVerifikasi;
-    }
-
-    public void setStsVerifikasi(Integer stsVerifikasi) {
-        this.stsVerifikasi = stsVerifikasi;
-    }
 }

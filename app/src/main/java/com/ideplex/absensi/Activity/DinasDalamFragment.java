@@ -21,6 +21,7 @@ import com.ideplex.absensi.Api.Api;
 import com.ideplex.absensi.Api.RetrofitClient;
 import com.ideplex.absensi.R;
 import com.ideplex.absensi.Response.BaseResponse2;
+import com.ideplex.absensi.Response.ResponseSelectCheckin;
 import com.ideplex.absensi.Session.Session;
 import com.ideplex.absensi.Table.Presensi;
 
@@ -36,8 +37,8 @@ import retrofit2.Response;
 
 public class DinasDalamFragment extends Fragment {
 
-    LinearLayout btn_absen_masuk, btn_absen_pulang;
-    TextView tgl_hadir, absen_masuk, absen_pulang, jarak, test;
+    LinearLayout btn_absen_masuk, btn_absen_pulang, btn_break, btn_lanjut, btn_message_checkin;
+    TextView tgl_hadir, absen_masuk, absen_pulang, jarak, text_message_checkin, durasi;
     Button btn_refresh_jarak;
 
     DateFormat dateFormat;
@@ -45,16 +46,13 @@ public class DinasDalamFragment extends Fragment {
 
     Session session;
     Api api;
-    Call<BaseResponse2<Presensi>> getKehadiran;
-    Call<BaseResponse2<Presensi>> checkin;
-    Call<BaseResponse2<Presensi>> checkout;
+    Call<ResponseSelectCheckin<Presensi>> getKehadiran;
+    Call<BaseResponse2<Presensi>> istirahat;
+    Call<BaseResponse2<Presensi>> lanjut;
+    Call<BaseResponse2<Presensi>> cek_checkout;
     Boolean sts_masuk = false;
     Boolean sts_pulang = false;
-    Boolean sts_dinas_luar = false;
-    Boolean sts_jadwal = false;
-
-    String jam_mulai_masuk, jam_sampai_masuk;
-    String jam_mulai_pulang, jam_sampai_pulang;
+    Integer id_presensi = 0;
 
     private GpsTracker gpsTracker;
     double hasil = 0;
@@ -72,10 +70,15 @@ public class DinasDalamFragment extends Fragment {
         date = new Date();
 
         btn_absen_masuk = (LinearLayout) view.findViewById(R.id.btn_absen_masuk);
+        btn_break = (LinearLayout) view.findViewById(R.id.btn_break);
+        btn_lanjut = (LinearLayout) view.findViewById(R.id.btn_lanjut);
         btn_absen_pulang = (LinearLayout) view.findViewById(R.id.btn_absen_pulang);
+        btn_message_checkin = (LinearLayout) view.findViewById(R.id.message_checkin);
+        text_message_checkin = view.findViewById(R.id.text_message_checkin);
         tgl_hadir = view.findViewById(R.id.tgl_hadir);
         absen_masuk = view.findViewById(R.id.absen_masuk);
         absen_pulang = view.findViewById(R.id.absen_pulang);
+        durasi = view.findViewById(R.id.durasi);
         tgl_hadir.setText(dateFormat.format(date));
         jarak = view.findViewById(R.id.jarak);
 
@@ -87,12 +90,12 @@ public class DinasDalamFragment extends Fragment {
         jadwalHariIni();
 
         try {
-            if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+            if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 101);
             } else {
                 getLocation();
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -109,7 +112,7 @@ public class DinasDalamFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 getLocation();
-                System.out.println(titik_absen+" | "+hasil);
+                System.out.println(titik_absen + " | " + hasil);
                 if (hasil > titik_absen) {
                     Toast.makeText(getContext(), "Anda diluar radius presensi", Toast.LENGTH_SHORT).show();
                 } else {
@@ -136,14 +139,41 @@ public class DinasDalamFragment extends Fragment {
                         if (sts_pulang) {
                             Toast.makeText(getContext(), "Anda sudah checkout", Toast.LENGTH_SHORT).show();
                         } else {
-                            Intent it = new Intent(getContext(), PilihAbsensiActivity.class);
-                            it.putExtra("tipe", "pulang");
-                            it.putExtra("jarak", hasil);
-                            startActivity(it);
+                            Boolean res = action_cek_chekout(id_presensi);
+                            if (res) {
+                                Intent it = new Intent(getContext(), PilihAbsensiActivity.class);
+                                it.putExtra("tipe", "pulang");
+                                it.putExtra("jarak", hasil);
+                                startActivity(it);
+                            }
                         }
                     } else {
                         Toast.makeText(getContext(), "Silahkan checkin terlebih dahulu !!!", Toast.LENGTH_SHORT).show();
                     }
+                }
+            }
+        });
+
+        btn_break.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getLocation();
+                if (hasil > titik_absen) {
+                    Toast.makeText(getContext(), "Anda diluar radius presensi", Toast.LENGTH_SHORT).show();
+                } else {
+                    doing_break(id_presensi);
+                }
+            }
+        });
+
+        btn_lanjut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getLocation();
+                if (hasil > titik_absen) {
+                    Toast.makeText(getContext(), "Anda diluar radius presensi", Toast.LENGTH_SHORT).show();
+                } else {
+                    doing_lanjut(id_presensi);
                 }
             }
         });
@@ -153,19 +183,64 @@ public class DinasDalamFragment extends Fragment {
 
     public void jadwalHariIni() {
         getKehadiran = api.getKehadiran();
-        getKehadiran.enqueue(new Callback<BaseResponse2<Presensi>>() {
+        getKehadiran.enqueue(new Callback<ResponseSelectCheckin<Presensi>>() {
             @Override
-            public void onResponse(Call<BaseResponse2<Presensi>> call, Response<BaseResponse2<Presensi>> response) {
+            public void onResponse(Call<ResponseSelectCheckin<Presensi>> call, Response<ResponseSelectCheckin<Presensi>> response) {
                 if (response.isSuccessful()) {
-                    if (response.body().getData() != null) {
-                        if (!TextUtils.isEmpty(response.body().getData().get(0).getCheckin())) {
-                            sts_masuk = true;
-                            absen_masuk.setText(response.body().getData().get(0).getCheckin().substring(11));
-                        }
+                    String waktuServer = response.body().getShift().getWaktuServer();
+                    String earlyCheckin = response.body().getShift().getEarlyCheckin();
+                    String lateCheckin = response.body().getShift().getLateCheckin();
 
-                        if (!TextUtils.isEmpty(response.body().getData().get(0).getCheckout())) {
-                            sts_pulang = true;
-                            absen_pulang.setText(response.body().getData().get(0).getCheckout().substring(11));
+                    if (response.body().getShift().getStatus() == 0 &&
+                            !response.body().getShift().getBagian().equalsIgnoreCase("dokter")) {
+                        text_message_checkin.setText("Checkin belum dibuka, silahkan cek jadwal Anda");
+                        btn_message_checkin.setVisibility(View.VISIBLE);
+                    } else {
+                        if (earlyCheckin.compareTo(waktuServer) > 0 &&
+                                response.body().getShift().getStatus() == 1 &&
+                                !response.body().getShift().getBagian().equalsIgnoreCase("dokter")) {
+                            text_message_checkin.setText("Checkin akan dibuka pada pukul " + response.body().getShift().getEarlyCheckin());
+                            btn_message_checkin.setVisibility(View.VISIBLE);
+                        } else if (lateCheckin.compareTo(waktuServer) < 0 &&
+                                    response.body().getShift().getStatus() == 1 &&
+                                    !response.body().getShift().getBagian().equalsIgnoreCase("dokter")) {
+                                text_message_checkin.setText("Checkin telah ditutup pada pukul "+response.body().getShift().getLateCheckin());
+                                btn_message_checkin.setVisibility(View.VISIBLE);
+                        } else {
+                            if (response.body().getData() == null) {
+                                btn_absen_masuk.setVisibility(View.VISIBLE);
+                            } else {
+                                id_presensi = response.body().getData().get(0).getId();
+                                if (!TextUtils.isEmpty(response.body().getData().get(0).getCheckin())) {
+                                    sts_masuk = true;
+                                    absen_masuk.setText(response.body().getData().get(0).getCheckin().substring(11));
+                                }
+
+                                if (!TextUtils.isEmpty(response.body().getData().get(0).getCheckout())) {
+                                    sts_pulang = true;
+                                    absen_pulang.setText(response.body().getData().get(0).getCheckout().substring(11));
+                                }
+
+                                if (!TextUtils.isEmpty(response.body().getDurasi())) {
+                                    durasi.setText(response.body().getDurasi());
+                                }
+
+                                switch (response.body().getData().get(0).getStatus()) {
+                                    case "aktif":
+                                        btn_break.setVisibility(View.VISIBLE);
+                                        btn_absen_pulang.setVisibility(View.VISIBLE);
+                                        break;
+                                    case "break":
+                                        btn_lanjut.setVisibility(View.VISIBLE);
+                                        btn_absen_pulang.setVisibility(View.VISIBLE);
+                                        break;
+                                    default:
+                                        if (response.body().getShift().getBagian().equalsIgnoreCase("dokter")) {
+                                            btn_lanjut.setVisibility(View.VISIBLE);
+                                        }
+                                        break;
+                                }
+                            }
                         }
                     }
                 } else {
@@ -174,8 +249,8 @@ public class DinasDalamFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<BaseResponse2<Presensi>> call, Throwable t) {
-                Toast.makeText(getContext(), "Error "+t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<ResponseSelectCheckin<Presensi>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -185,8 +260,7 @@ public class DinasDalamFragment extends Fragment {
 
         String reg = "^([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$";
         if (initialTime.matches(reg) && finalTime.matches(reg) &&
-                currentTime.matches(reg))
-        {
+                currentTime.matches(reg)) {
             boolean valid = false;
             //Start Time
             //all times are from java.util.Date
@@ -204,8 +278,7 @@ public class DinasDalamFragment extends Fragment {
             Calendar calendar2 = Calendar.getInstance();
             calendar2.setTime(finTime);
 
-            if (finalTime.compareTo(initialTime) < 0)
-            {
+            if (finalTime.compareTo(initialTime) < 0) {
                 calendar2.add(Calendar.DATE, 1);
                 calendar3.add(Calendar.DATE, 1);
             }
@@ -213,8 +286,7 @@ public class DinasDalamFragment extends Fragment {
             java.util.Date actualTime = calendar3.getTime();
             if ((actualTime.after(calendar1.getTime()) ||
                     actualTime.compareTo(calendar1.getTime()) == 0) &&
-                    actualTime.before(calendar2.getTime()))
-            {
+                    actualTime.before(calendar2.getTime())) {
                 valid = true;
                 return valid;
             } else {
@@ -265,14 +337,14 @@ public class DinasDalamFragment extends Fragment {
         return false;
     }
 
-    public void getLocation(){
+    public void getLocation() {
         gpsTracker = new GpsTracker(getContext());
-        if(gpsTracker.canGetLocation()){
+        if (gpsTracker.canGetLocation()) {
             double initialLat = gpsTracker.getLatitude();
             double initialLong = gpsTracker.getLongitude();
             hasil = Math.round(CalculationByDistance(initialLat, initialLong, finalLat, finalLong) * 1000);
             jarak.setText(String.format("%.0f", hasil));
-        }else{
+        } else {
             gpsTracker.showSettingsAlert();
         }
     }
@@ -292,5 +364,86 @@ public class DinasDalamFragment extends Fragment {
 
     public double toRadians(double deg) {
         return deg * (Math.PI / 180);
+    }
+
+    public void doing_break(Integer id_presensi) {
+        istirahat = api.istirahat(id_presensi+"");
+        istirahat.enqueue(new Callback<BaseResponse2<Presensi>>() {
+            @Override
+            public void onResponse(Call<BaseResponse2<Presensi>> call, Response<BaseResponse2<Presensi>> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().getStatus() == false) {
+                        Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        btn_lanjut.setVisibility(View.VISIBLE);
+                        btn_break.setVisibility(View.GONE);
+                        btn_absen_pulang.setVisibility(View.VISIBLE);
+                        Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        jadwalHariIni();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "Gagal melakukan break !!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse2<Presensi>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void doing_lanjut(Integer id_presensi) {
+        lanjut = api.lanjut(id_presensi+"");
+        lanjut.enqueue(new Callback<BaseResponse2<Presensi>>() {
+            @Override
+            public void onResponse(Call<BaseResponse2<Presensi>> call, Response<BaseResponse2<Presensi>> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().getStatus() == false) {
+                        Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        btn_lanjut.setVisibility(View.GONE);
+                        btn_break.setVisibility(View.VISIBLE);
+                        btn_absen_pulang.setVisibility(View.VISIBLE);
+                        Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        jadwalHariIni();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "Gagal melakukan lanjut !!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse2<Presensi>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    Boolean result = false;
+    public Boolean action_cek_chekout(Integer id_presensi) {
+        cek_checkout = api.cek_checkout(id_presensi+"");
+        cek_checkout.enqueue(new Callback<BaseResponse2<Presensi>>() {
+            @Override
+            public void onResponse(Call<BaseResponse2<Presensi>> call, Response<BaseResponse2<Presensi>> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().getStatus() == false) {
+                        Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        result = true;
+                    }
+                } else {
+                    Toast.makeText(getContext(), "Pengecekan Checkout Gagal !!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse2<Presensi>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return result;
     }
 }

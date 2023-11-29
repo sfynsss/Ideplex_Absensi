@@ -159,6 +159,24 @@
                             android:textColor="@color/black">
                         </TextView>
                     </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Durasi : ">
+                        </TextView>
+                        <TextView
+                            android:id="@+id/durasi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-"
+                            android:textStyle="bold"
+                            android:textColor="@color/black">
+                        </TextView>
+                    </LinearLayout>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="0dp"
@@ -194,7 +212,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:background="@drawable/bt_white_round"
-            android:visibility="visible"
+            android:visibility="gone"
             android:gravity="center"
             android:orientation="vertical">
             <TextView
@@ -212,11 +230,59 @@
             </TextView>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/btn_break"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            android:background="@drawable/bt_white_round"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Break"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#FFC107">
+            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Break untuk melakukan istirahat"
+                android:textColor="#FFC107">
+            </TextView>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/btn_lanjut"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            android:background="@drawable/bt_white_round"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lanjut"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#009688">
+            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lanjut bekerja setelah istirahat"
+                android:textColor="#009688">
+            </TextView>
+        </LinearLayout>
+        <LinearLayout
             android:id="@+id/btn_absen_pulang"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="16dp"
-            android:visibility="visible"
+            android:visibility="gone"
             android:background="@drawable/bt_white_round"
             android:gravity="center"
             android:orientation="vertical">
@@ -233,6 +299,24 @@
                 android:layout_height="wrap_content"
                 android:text="Pilih untuk presensi pulang"
                 android:textColor="#CE3032">
+            </TextView>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/message_checkin"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bt_white_round"
+            android:visibility="gone"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/text_message_checkin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/green_primary"
+                android:textStyle="bold">
             </TextView>
         </LinearLayout>
     </LinearLayout>

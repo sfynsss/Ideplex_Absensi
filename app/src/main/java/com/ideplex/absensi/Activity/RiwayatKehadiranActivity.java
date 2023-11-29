@@ -40,10 +40,9 @@ public class RiwayatKehadiranActivity extends AppCompatActivity {
     int mm = calendar.get(Calendar.MONTH);
     int dd = calendar.get(Calendar.DAY_OF_MONTH);
 
-    ArrayList<String> scan_date = new ArrayList<>();
-    ArrayList<String> status = new ArrayList<>();
-    ArrayList<String> dinas_luar = new ArrayList<>();
-    ArrayList<String> keterangan = new ArrayList<>();
+    ArrayList<String> tanggal = new ArrayList<>();
+    ArrayList<String> checkin = new ArrayList<>();
+    ArrayList<String> checkout = new ArrayList<>();
 
     Session session;
     Api api;
@@ -81,27 +80,17 @@ public class RiwayatKehadiranActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<BaseResponse<Kehadiran>> call, Response<BaseResponse<Kehadiran>> response) {
                         if (response.isSuccessful()) {
-                            scan_date.clear();
-                            status.clear();
-                            dinas_luar.clear();
-                            keterangan.clear();
+                            tanggal.clear();
+                            checkin.clear();
+                            checkout.clear();
 
                             for (int i = 0; i < response.body().getData().size(); i++) {
-                                scan_date.add(response.body().getData().get(i).getScanDate());
-                                status.add(response.body().getData().get(i).getStatus());
-                                dinas_luar.add(response.body().getData().get(i).getDinasLuar().toString());
-                                if (response.body().getData().get(i).getDinasLuar() == 1) {
-                                    if (response.body().getData().get(i).getStsVerifikasi() == 2) {
-                                        keterangan.add("Belum di verifikasi");
-                                    } else {
-                                        keterangan.add("Terverifikasi");
-                                    }
-                                } else {
-                                    keterangan.add("-");
-                                }
+                                tanggal.add(response.body().getData().get(i).getTanggal());
+                                checkin.add(response.body().getData().get(i).getCheckin());
+                                checkout.add(response.body().getData().get(i).getCheckout());
                             }
 
-                            adapterRiwayatKehadiran = new AdapterRiwayatKehadiran(RiwayatKehadiranActivity.this, scan_date, status, dinas_luar, keterangan);
+                            adapterRiwayatKehadiran = new AdapterRiwayatKehadiran(RiwayatKehadiranActivity.this, tanggal, checkin, checkout);
                             list_riwayat_kehadiran.setAdapter(adapterRiwayatKehadiran);
                             adapterRiwayatKehadiran.notifyDataSetChanged();
                         } else {

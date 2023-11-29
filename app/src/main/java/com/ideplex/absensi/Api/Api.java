@@ -2,6 +2,7 @@ package com.ideplex.absensi.Api;
 
 import com.ideplex.absensi.Response.BaseResponse;
 import com.ideplex.absensi.Response.BaseResponse2;
+import com.ideplex.absensi.Response.ResponseSelectCheckin;
 import com.ideplex.absensi.Response.UserResponse;
 import com.ideplex.absensi.Table.Absen;
 import com.ideplex.absensi.Table.JadwalHariIni;
@@ -36,13 +37,34 @@ public interface Api {
     Call<BaseResponse<JadwalHariIni>> getJadwalSaya();
 
     @GET("select-checkin")
-    Call<BaseResponse2<Presensi>> getKehadiran();
+    Call<ResponseSelectCheckin<Presensi>> getKehadiran();
 
     @GET("checkin")
     Call<BaseResponse2<Presensi>> checkin();
 
-    @GET("checkout")
-    Call<BaseResponse2<Presensi>> checkout();
+    @FormUrlEncoded
+    @POST("break")
+    Call<BaseResponse2<Presensi>> istirahat(
+            @Field("id") String id
+    );
+
+    @FormUrlEncoded
+    @POST("lanjut")
+    Call<BaseResponse2<Presensi>> lanjut(
+            @Field("id") String id
+    );
+
+    @FormUrlEncoded
+    @POST("select-checkout")
+    Call<BaseResponse2<Presensi>> cek_checkout(
+            @Field("id") String id
+    );
+
+    @FormUrlEncoded
+    @POST("checkout")
+    Call<BaseResponse2<Presensi>> checkout(
+
+    );
 
     @FormUrlEncoded
     @POST("getAbsensi")

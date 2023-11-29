@@ -16,6 +16,7 @@ import com.ideplex.absensi.Helpers.ErrorUtils;
 import com.ideplex.absensi.R;
 import com.ideplex.absensi.Response.BaseResponse;
 import com.ideplex.absensi.Response.BaseResponse2;
+import com.ideplex.absensi.Response.ResponseSelectCheckin;
 import com.ideplex.absensi.Session.Session;
 import com.ideplex.absensi.Table.Absen;
 import com.ideplex.absensi.Table.Presensi;
@@ -32,7 +33,7 @@ public class AbsensiBerhasilActivity extends AppCompatActivity {
     Session session;
     Api api;
     Call<BaseResponse<Absen>> absen;
-    Call<BaseResponse2<Presensi>> getKehadiran;
+    Call<ResponseSelectCheckin<Presensi>> getKehadiran;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,14 +91,16 @@ public class AbsensiBerhasilActivity extends AppCompatActivity {
 //            }
 //        });
         getKehadiran = api.getKehadiran();
-        getKehadiran.enqueue(new Callback<BaseResponse2<Presensi>>() {
+        getKehadiran.enqueue(new Callback<ResponseSelectCheckin<Presensi>>() {
             @Override
-            public void onResponse(Call<BaseResponse2<Presensi>> call, Response<BaseResponse2<Presensi>> response) {
+            public void onResponse(Call<ResponseSelectCheckin<Presensi>> call, Response<ResponseSelectCheckin<Presensi>> response) {
                 if (response.isSuccessful()) {
-                    if (sts.equals("1")) {
-                        jam_absen.setText(response.body().getData().get(0).getCheckin().substring(11));
-                    } else if (sts.equals("2")) {
-                        jam_absen.setText(response.body().getData().get(0).getCheckout().substring(11));
+                    if (response.body().getData() != null) {
+                        if (sts.equals("1")) {
+                            jam_absen.setText(response.body().getData().get(0).getCheckin().substring(11));
+                        } else if (sts.equals("2")) {
+                            jam_absen.setText(response.body().getData().get(0).getCheckout().substring(11));
+                        }
                     }
                 } else {
                     ApiError apiError = ErrorUtils.parseError(response);
@@ -106,7 +109,7 @@ public class AbsensiBerhasilActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<BaseResponse2<Presensi>> call, Throwable t) {
+            public void onFailure(Call<ResponseSelectCheckin<Presensi>> call, Throwable t) {
                 Toast.makeText(AbsensiBerhasilActivity.this, "Error "+t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

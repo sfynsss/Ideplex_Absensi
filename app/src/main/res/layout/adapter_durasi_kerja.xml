@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginTop="4dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="76dp">
+
+        <ImageView
+            android:id="@+id/gbr_keluar"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:visibility="gone"
+            android:background="@drawable/ic_adapter_out"></ImageView>
+
+        <ImageView
+            android:id="@+id/gbr_masuk"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/ic_adapter_in"></ImageView>
+
+        <LinearLayout
+            android:id="@+id/ly_absen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="60dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/nama_hari"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Selasa"
+                android:textColor="@color/black"
+                android:layout_marginBottom="5dp"
+                android:textStyle="bold"></TextView>
+            <TextView
+                android:id="@+id/tanggal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="28 November 2023">
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ly_ket"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="4dp">
+
+            <TextView
+                android:id="@+id/durasi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="7 jam, 24 menit, 1 detik"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EAEAEA"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="16dp">
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>
