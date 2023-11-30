@@ -62,16 +62,16 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bt_white_round"
                 android:paddingHorizontal="12dp">
+
                 <EditText
                     android:id="@+id/nip"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="37dp"
                     android:layout_marginVertical="2dp"
-                    android:hint="Masukkan username pegawai"
                     android:background="@color/white"
-                    android:textSize="14sp"
-                    android:inputType="text">
-                </EditText>
+                    android:hint="Masukkan username pegawai"
+                    android:inputType="text"
+                    android:textSize="14sp"></EditText>
             </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"

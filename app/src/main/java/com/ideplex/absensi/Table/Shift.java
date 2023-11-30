@@ -26,6 +26,9 @@ public class Shift {
     @SerializedName("waktu_server")
     @Expose
     private String waktuServer;
+    @SerializedName("shift")
+    @Expose
+    private String shift;
 
     public String getEarlyCheckin() {
         return earlyCheckin;
@@ -81,6 +84,14 @@ public class Shift {
 
     public void setWaktuServer(String waktuServer) {
         this.waktuServer = waktuServer;
+    }
+
+    public String getShift() {
+        return shift;
+    }
+
+    public void setShift(String shift) {
+        this.shift = shift;
     }
 
 }

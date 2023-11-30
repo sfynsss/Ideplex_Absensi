@@ -102,20 +102,20 @@
                             android:textColor="@color/black"
                             android:textSize="13sp"></TextView>
 
-                        <TextView
-                            android:id="@+id/jabatan_pengguna"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/nip_pengguna"
-                            android:layout_marginLeft="8dp"
-                            android:layout_toRightOf="@+id/img_profil"
-                            android:text="jabatan"
-                            android:textSize="13sp"></TextView>
+<!--                        <TextView-->
+<!--                            android:id="@+id/jabatan_pengguna"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_below="@+id/nip_pengguna"-->
+<!--                            android:layout_marginLeft="8dp"-->
+<!--                            android:layout_toRightOf="@+id/img_profil"-->
+<!--                            android:text="jabatan"-->
+<!--                            android:textSize="13sp"></TextView>-->
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/jabatan_pengguna"
+                            android:layout_below="@+id/nip_pengguna"
                             android:layout_toRightOf="@+id/img_profil">
 
                             <TextView
@@ -133,7 +133,6 @@
                                 android:background="@color/green_dark"
                                 android:paddingHorizontal="4dp"
                                 android:paddingVertical="2dp"
-                                android:text="Pagi - Jumat"
                                 android:textColor="#FFF"
                                 android:textStyle="bold"></TextView>
                         </LinearLayout>

@@ -143,7 +143,7 @@ public class PilihAbsensiActivity extends AppCompatActivity {
         Log.d("TAG", "onCreate token: "+session.getToken());
 
         tipe = getIntent().getStringExtra("tipe");
-        jarak_tmp = getIntent().getStringExtra("jarak");
+        jarak_tmp = getIntent().getStringExtra("jarak")+"";
         laporan = getIntent().getStringExtra("laporan");
         upload = getIntent().getStringExtra("upload");
         id_presensi = getIntent().getStringExtra("id_presensi");
@@ -244,7 +244,7 @@ public class PilihAbsensiActivity extends AppCompatActivity {
                 int sts = 0;
                 if (tipe.equals("masuk")) {
                     sts = 1;
-                    checkin = api.checkin();
+                    checkin = api.checkin(imageToString(photo));
                     checkin.enqueue(new Callback<BaseResponse2<Presensi>>() {
                         @Override
                         public void onResponse(Call<BaseResponse2<Presensi>> call, Response<BaseResponse2<Presensi>> response) {
@@ -266,7 +266,7 @@ public class PilihAbsensiActivity extends AppCompatActivity {
                     });
                 } else {
                     sts = 2;
-                    checkout = api.checkout(laporan, upload, id_presensi);
+                    checkout = api.checkout(laporan, upload, id_presensi, imageToString(photo));
                     checkout.enqueue(new Callback<BaseResponse2<Presensi>>() {
                         @Override
                         public void onResponse(Call<BaseResponse2<Presensi>> call, Response<BaseResponse2<Presensi>> response) {
@@ -294,9 +294,10 @@ public class PilihAbsensiActivity extends AppCompatActivity {
                 SpotsDialog dialog = (SpotsDialog) new SpotsDialog.Builder().setContext(PilihAbsensiActivity.this).build();
                 dialog.show();
                 int sts = 0;
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
                 if (tipe.equals("masuk")) {
                     sts = 1;
-                    checkin = api.checkin();
+                    checkin = api.checkin(imageToString(photo));
                     checkin.enqueue(new Callback<BaseResponse2<Presensi>>() {
                         @Override
                         public void onResponse(Call<BaseResponse2<Presensi>> call, Response<BaseResponse2<Presensi>> response) {
@@ -318,7 +319,7 @@ public class PilihAbsensiActivity extends AppCompatActivity {
                     });
                 } else {
                     sts = 2;
-                    checkout = api.checkout(laporan, upload, id_presensi);
+                    checkout = api.checkout(laporan, upload, id_presensi, imageToString(photo));
                     checkout.enqueue(new Callback<BaseResponse2<Presensi>>() {
                         @Override
                         public void onResponse(Call<BaseResponse2<Presensi>> call, Response<BaseResponse2<Presensi>> response) {

@@ -86,7 +86,7 @@ public class EditProfilActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 kataSandi = password_pengguna.getText().toString();
-                ubahPassword = api.ubahPassword(session.getNip(), kataSandi);
+                ubahPassword = api.ubahPassword(kataSandi);
                 ubahPassword.enqueue(new Callback<BaseResponse>() {
                     @Override
                     public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {

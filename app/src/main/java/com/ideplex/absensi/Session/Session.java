@@ -15,10 +15,11 @@ public class Session {
         this.editor = preferences.edit();
     }
 
-    public void setUserStatus(Boolean loggedIn, String id_user, String nama, String token){
+    public void setUserStatus(Boolean loggedIn, String id_user, String nama, String jabatan, String token){
         editor.putBoolean("loggedIn", loggedIn);
         editor.putString("id_user", id_user);
         editor.putString("nama", nama);
+        editor.putString("jabatan", jabatan);
         editor.putString("token", token);
         editor.commit();
     }
@@ -49,6 +50,10 @@ public class Session {
 
     public String getNama() {
         return preferences.getString("nama", "");
+    }
+
+    public String getJabatan() {
+        return preferences.getString("jabatan", "");
     }
 
     public String getNamaBagian() {

@@ -118,6 +118,45 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/btn_register_new_user"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:visibility="gone"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_yellow_round">
+
+        <ImageView
+            android:id="@+id/ic_scan"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:background="@drawable/absen_ic_scan"></ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@+id/ic_scan"
+            android:text="Register Pengguna Baru"
+            android:textColor="@color/colorAccent"
+            android:textSize="16sp"
+            android:textStyle="bold"></TextView>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/ic_arrow_right">
+        </ImageView>
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/btn_logout"
         android:layout_width="match_parent"
         android:layout_height="60dp"

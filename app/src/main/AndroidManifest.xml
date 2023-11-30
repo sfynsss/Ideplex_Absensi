@@ -47,6 +47,9 @@
             android:name="com.ideplex.absensi.Activity.PengajuanIzinActivity"
             android:exported="true" />
         <activity
+            android:name="com.ideplex.absensi.Activity.RegisterMukaActivity"
+            android:exported="true" />
+        <activity
             android:name="com.ideplex.absensi.Activity.RiwayatKehadiranActivity"
             android:exported="true" />
         <activity

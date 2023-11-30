@@ -265,35 +265,39 @@ public class DinasDalamFragment extends Fragment {
                             }
                         }
                     } else {
-                        id_presensi = response.body().getData().get(0).getId();
-                        if (!TextUtils.isEmpty(response.body().getData().get(0).getCheckin())) {
-                            sts_masuk = true;
-                            absen_masuk.setText(response.body().getData().get(0).getCheckin().substring(11));
-                        }
+                        if (response.body().getData() != null) {
+                            id_presensi = response.body().getData().get(0).getId();
+                            if (!TextUtils.isEmpty(response.body().getData().get(0).getCheckin())) {
+                                sts_masuk = true;
+                                absen_masuk.setText(response.body().getData().get(0).getCheckin().substring(11));
+                            }
 
-                        if (!TextUtils.isEmpty(response.body().getData().get(0).getCheckout())) {
-                            sts_pulang = true;
-                            absen_pulang.setText(response.body().getData().get(0).getCheckout().substring(11));
-                        }
+                            if (!TextUtils.isEmpty(response.body().getData().get(0).getCheckout())) {
+                                sts_pulang = true;
+                                absen_pulang.setText(response.body().getData().get(0).getCheckout().substring(11));
+                            }
 
-                        if (!TextUtils.isEmpty(response.body().getDurasi())) {
-                            durasi.setText(response.body().getDurasi());
-                        }
+                            if (!TextUtils.isEmpty(response.body().getDurasi())) {
+                                durasi.setText(response.body().getDurasi());
+                            }
 
-                        switch (response.body().getData().get(0).getStatus()) {
-                            case "aktif":
-                                btn_break.setVisibility(View.VISIBLE);
-                                btn_absen_pulang.setVisibility(View.VISIBLE);
-                                break;
-                            case "break":
-                                btn_lanjut.setVisibility(View.VISIBLE);
-                                btn_absen_pulang.setVisibility(View.VISIBLE);
-                                break;
-                            default:
-                                if (response.body().getShift().getBagian().equalsIgnoreCase("dokter")) {
+                            switch (response.body().getData().get(0).getStatus()) {
+                                case "aktif":
+                                    btn_break.setVisibility(View.VISIBLE);
+                                    btn_absen_pulang.setVisibility(View.VISIBLE);
+                                    break;
+                                case "break":
                                     btn_lanjut.setVisibility(View.VISIBLE);
-                                }
-                                break;
+                                    btn_absen_pulang.setVisibility(View.VISIBLE);
+                                    break;
+                                default:
+                                    if (response.body().getShift().getBagian().equalsIgnoreCase("dokter")) {
+                                        btn_lanjut.setVisibility(View.VISIBLE);
+                                    }
+                                    break;
+                            }
+                        } else {
+                            btn_absen_masuk.setVisibility(View.VISIBLE);
                         }
                     }
                 } else {
@@ -459,7 +463,8 @@ public class DinasDalamFragment extends Fragment {
                         btn_break.setVisibility(View.VISIBLE);
                         btn_absen_pulang.setVisibility(View.VISIBLE);
                         Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        jadwalHariIni();
+                        startActivity(new Intent(getActivity(), MainActivity.class));
+                        getActivity().finish();
                     }
                 } else {
                     Toast.makeText(getContext(), "Gagal melakukan lanjut !!!", Toast.LENGTH_SHORT).show();

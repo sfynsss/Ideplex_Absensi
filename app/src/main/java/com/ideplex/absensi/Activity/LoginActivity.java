@@ -99,7 +99,10 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                         if (response.isSuccessful()) {
-                            session.setUserStatus(true, response.body().getUser().getId().toString(), response.body().getUser().getNama(), response.body().getUser().getApiToken());
+                            session.setUserStatus(true, response.body().getUser().getId().toString(),
+                                    response.body().getUser().getNama(),
+                                    response.body().getUser().getJabatan()+"",
+                                    response.body().getUser().getApiToken());
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                             Toast.makeText(LoginActivity.this, "Selamat datang "+response.body().getUser().getNama(), Toast.LENGTH_SHORT).show();

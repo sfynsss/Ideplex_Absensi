@@ -28,7 +28,7 @@ import retrofit2.Call;
 
 public class ProfilFragment extends Fragment {
 
-    RelativeLayout btn_logout, btn_edit, btn_qr;
+    RelativeLayout btn_logout, btn_edit, btn_qr, btn_register_new_user;
 
     Session session;
     Api api;
@@ -44,6 +44,7 @@ public class ProfilFragment extends Fragment {
         btn_edit = view.findViewById(R.id.btn_edit);
         btn_logout = view.findViewById(R.id.btn_logout);
         btn_qr = view.findViewById(R.id.btn_qr);
+        btn_register_new_user = view.findViewById(R.id.btn_register_new_user);
 
         btn_qr.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,9 +63,21 @@ public class ProfilFragment extends Fragment {
         btn_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                session.setUserStatus(false, "","", "");
+                session.setUserStatus(false, "","", "", "");
                 startActivity(new Intent(getActivity(), LoginActivity.class));
                 getActivity().finish();
+            }
+        });
+
+        System.out.println(session.getJabatan());
+        if (session.getJabatan().equalsIgnoreCase("Kapten") || session.getJabatan().equalsIgnoreCase("Admin")) {
+            btn_register_new_user.setVisibility(View.VISIBLE);
+        }
+
+        btn_register_new_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), RegisterMukaActivity.class));
             }
         });
 

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +23,12 @@ import com.ideplex.absensi.Helpers.ApiError;
 import com.ideplex.absensi.Helpers.ErrorUtils;
 import com.ideplex.absensi.R;
 import com.ideplex.absensi.Response.BaseResponse;
+import com.ideplex.absensi.Response.ResponseSelectCheckin;
 import com.ideplex.absensi.Session.Session;
 import com.ideplex.absensi.Table.JadwalHariIni;
 import com.ideplex.absensi.Table.Kehadiran;
+import com.ideplex.absensi.Table.Presensi;
+import com.ideplex.absensi.Table.Shift;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +48,7 @@ public class BerandaFragment extends Fragment {
     ImageView img_profil;
     Session session;
     Api api;
-    Call<BaseResponse<JadwalHariIni>> getJadwalHariIni;
+    Call<BaseResponse<Shift>> jadwalHariIni;
     Call<BaseResponse<Kehadiran>> getRiwayatKehadiran;
     AdapterDurasiKerja adapterDurasiKerja;
 
@@ -67,16 +71,16 @@ public class BerandaFragment extends Fragment {
 
         nama_pengguna = view.findViewById(R.id.nama_pengguna);
         list_riwayat_kehadiran = view.findViewById(R.id.list_riwayat_kehadiran);
-//        nip_pengguna = view.findViewById(R.id.nip_pengguna);
+        nip_pengguna = view.findViewById(R.id.nip_pengguna);
 //        jabatan_pengguna = view.findViewById(R.id.jabatan_pengguna);
-//        shift_pengguna = view.findViewById(R.id.shift_pengguna);
+        shift_pengguna = view.findViewById(R.id.shift_pengguna);
 //        shift_pengguna.setText(session.getShift());
 
         nama_pengguna.setText(session.getNama());
-//        nip_pengguna.setText(session.getNip());
+        nip_pengguna.setText(session.getJabatan());
 //        jabatan_pengguna.setText(session.getNamaBagian());
 
-        jadwalHariIni(session.getNip());
+        jadwalHariIni();
         getDataRiwayatKehadiran();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -123,32 +127,25 @@ public class BerandaFragment extends Fragment {
         return view;
     }
 
-    public void jadwalHariIni(String nip) {
-        getJadwalHariIni = api.getJadwalHariIni(session.getNip());
-        getJadwalHariIni.enqueue(new Callback<BaseResponse<JadwalHariIni>>() {
+    public void jadwalHariIni() {
+        jadwalHariIni = api.jadwalHariIni();
+        jadwalHariIni.enqueue(new Callback<BaseResponse<Shift>>() {
             @Override
-            public void onResponse(Call<BaseResponse<JadwalHariIni>> call, Response<BaseResponse<JadwalHariIni>> response) {
+            public void onResponse(Call<BaseResponse<Shift>> call, Response<BaseResponse<Shift>> response) {
                 if (response.isSuccessful()) {
-                    ArrayList<String> jadwalku = new ArrayList<>();
-                    jadwalku.clear();
-
-                    for (int i = 0; i < response.body().getData().size(); i++) {
-                        jadwalku.add(response.body().getData().get(i).getShift());
+                    if (response.body().getData() != null) {
+                        shift_pengguna.setText(!TextUtils.isEmpty(response.body().getData().get(0).getShift()) ? response.body().getData().get(0).getShift() : "-");
                     }
-
-                    Collections.reverse(jadwalku);
-//                    shift_pengguna.setText(TextUtils.join(", ", jadwalku));
                 } else {
-//                    shift_pengguna.setText("-");
-//                    ApiError apiError = ErrorUtils.parseError(response);
-//                    Toast.makeText(getContext(), apiError.getMessage(), Toast.LENGTH_SHORT).show();
+                    ApiError apiError = ErrorUtils.parseError(response);
+                    Toast.makeText(getActivity(), apiError.getMessage(), Toast.LENGTH_SHORT).show();
+                    shift_pengguna.setText("-");
                 }
             }
 
             @Override
-            public void onFailure(Call<BaseResponse<JadwalHariIni>> call, Throwable t) {
-//                shift_pengguna.setText("-");
-                Toast.makeText(getContext(), "Error "+t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<BaseResponse<Shift>> call, Throwable t) {
+                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

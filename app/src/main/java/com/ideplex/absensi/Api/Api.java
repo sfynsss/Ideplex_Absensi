@@ -9,6 +9,7 @@ import com.ideplex.absensi.Table.JadwalHariIni;
 import com.ideplex.absensi.Table.Jarak;
 import com.ideplex.absensi.Table.Kehadiran;
 import com.ideplex.absensi.Table.Presensi;
+import com.ideplex.absensi.Table.Shift;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -36,11 +37,17 @@ public interface Api {
     @GET("getJadwalKerja")
     Call<BaseResponse<JadwalHariIni>> getJadwalSaya();
 
+    @GET("jadwalHariIni")
+    Call<BaseResponse<Shift>> jadwalHariIni();
+
     @GET("select-checkin")
     Call<ResponseSelectCheckin<Presensi>> getKehadiran();
 
-    @GET("checkin")
-    Call<BaseResponse2<Presensi>> checkin();
+    @FormUrlEncoded
+    @POST("checkin")
+    Call<BaseResponse2<Presensi>> checkin(
+            @Field("foto") String foto
+    );
 
     @FormUrlEncoded
     @POST("break")
@@ -65,7 +72,8 @@ public interface Api {
     Call<BaseResponse2<Presensi>> checkout(
             @Field("laporan") String laporan,
             @Field("upload") String upload,
-            @Field("id") String id
+            @Field("id") String id,
+            @Field("foto") String foto
     );
 
     @FormUrlEncoded
@@ -130,10 +138,16 @@ public interface Api {
     @FormUrlEncoded
     @POST("ubahPassword")
     Call<BaseResponse> ubahPassword(
-            @Field("nip") String nip,
             @Field("password") String password
     );
 
     @GET("getSettingJarak")
     Call<BaseResponse> getSettingJarak();
+
+    @FormUrlEncoded
+    @POST("registerMuka")
+    Call<BaseResponse> registerMuka(
+            @Field("username") String username,
+            @Field("foto") String foto
+    );
 }
